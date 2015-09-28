@@ -4,35 +4,48 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Forms;
 
 namespace WinMergeExtension
 {
 	class Program
 	{
 		const string DebugIdentifier = "true";
-		const string FilePath = @"C:\WinMergeExtension\StartWinMerge.bat";
+        const string CreateIdentifier = "create";
+        const string FilePath = @"C:\WinMergeExtension\StartWinMerge.bat";
 		const string SettingsFile = @"C:\WinMergeExtension\Settings.txt";
 		const string BranchParName = "BrPath";
 		const char SplitterSettings = '=';
-		const char SplitterPath = '\\';
+		const char SplitterBytes = ',';
+        const char SplitterPath = '\\';
+        const string BytesVariable = "string WinMergeBytes";
+        const string FileExtName = "WinMergeExtension.exe";
+        const string DialogTitle = "Choose WinMergeExtentionInstaller 'Program.cs' file";
+        const string Space = " ";
 
-		static bool isDebugMode = false;
+        static bool isDebugMode = false;
 		static string additionalArgs = string.Empty;
 		static string branchesPath = string.Empty;
 		static string inputArgs = string.Empty;
 		static string secondFile = string.Empty;
 		static string curBranch = string.Empty;
-		static List<string> branchNames = new List<string>();
+        static string bytesLineTemplate = "string WinMergeBytes = \"{0}\";";
+        static List<string> branchNames = new List<string>();
 		static ProcessStartInfo processInfo;
 		static Process process;
 		static StreamReader settings;
-
+        
+        [STAThread]
 		static void Main(string[] args)
 		{
 			if (args.Length >= 1)
 			{
+                if(CreateIdentifier.Equals(args[0]))
+                {
+                    CreateInstaller();
+                    return;
+                }
+
 				CheckMode(args);
 
 				GetSettings();
@@ -40,7 +53,7 @@ namespace WinMergeExtension
 				if (branchesPath == null || string.Empty.Equals(branchesPath))
 					return;
 
-				inputArgs = args[0] + " ";
+				inputArgs = args[0] + Space;
 
 				GetBranches();
 
@@ -52,7 +65,7 @@ namespace WinMergeExtension
 					inputArgs += branchesPath 
 						+ chooseBranch.SelectedElement 
 						+ inputArgs.Remove(0, inputArgs.IndexOf(curBranch) + curBranch.Length) 
-						+ " ";
+						+ Space;
 				else
 					return;
 
@@ -60,7 +73,45 @@ namespace WinMergeExtension
 			}
 		}
 
-		private static void StartWinMerge()
+        private static void CreateInstaller()
+        {
+            byte[] buffer = File.ReadAllBytes(Environment.CurrentDirectory + SplitterPath + FileExtName);
+            string winMergeBytes = string.Empty;
+
+            foreach (var b in buffer)
+                winMergeBytes += b + SplitterBytes.ToString();
+
+            winMergeBytes = winMergeBytes.TrimEnd(SplitterBytes);
+
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Title = DialogTitle;
+                dialog.CheckFileExists = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                    ReWriteInstaller(dialog.FileName, winMergeBytes);
+            }
+        }
+
+        private static void ReWriteInstaller(string path, string winMergeBytes)
+        {
+            StringBuilder content = new StringBuilder();
+
+            using (StreamReader reader = new StreamReader(path))
+            {
+                do
+                {
+                    string line = reader.ReadLine();
+                    if (!line.Contains(BytesVariable))
+                        content.AppendLine(line);
+                    else
+                        content.AppendLine(string.Format(bytesLineTemplate, winMergeBytes));
+                } while (!reader.EndOfStream);
+            }
+
+            File.WriteAllText(path, content.ToString());
+        }
+
+        private static void StartWinMerge()
 		{
 			processInfo = new ProcessStartInfo(FilePath, inputArgs + additionalArgs);
 			processInfo.CreateNoWindow = true;
@@ -116,7 +167,7 @@ namespace WinMergeExtension
 			{
 				if (DebugIdentifier.Equals(a))
 					isDebugMode = true;
-				inputArgs += a + " ";
+				inputArgs += a + Space;
 			}
 
 			if (isDebugMode)
