@@ -24,7 +24,6 @@ namespace WinMergeExtension
         const string Space = " ";
 
         static bool isDebugMode = false;
-		static string additionalArgs = string.Empty;
 		static string branchesPath = string.Empty;
 		static string inputArgs = string.Empty;
 		static string secondFile = string.Empty;
@@ -38,7 +37,9 @@ namespace WinMergeExtension
         [STAThread]
 		static void Main(string[] args)
 		{
-			if (args.Length >= 1)
+            //args[0] = @"C:\Sources\1\1.txt";//for test in VS
+            //args[1] = "true";//for test in VS
+            if (args.Length >= 1)
 			{
                 if(CreateIdentifier.Equals(args[0]))
                 {
@@ -47,18 +48,18 @@ namespace WinMergeExtension
                 }
 
 				CheckMode(args);
-
 				GetSettings();
 
-				if (branchesPath == null || string.Empty.Equals(branchesPath))
-					return;
+                if (branchesPath == null || string.Empty.Equals(branchesPath))
+                {
+                    if (isDebugMode)
+                        MessageBox.Show("BranchesPath is null or empty","Error");
+                    return;
+                }
 
-				inputArgs = args[0] + Space;
-
+                inputArgs = args[0] + Space;
 				GetBranches();
-
 				Chooser chooseBranch = new Chooser(branchNames);
-
 				chooseBranch.ShowDialog();
 
 				if (chooseBranch.DialogResult == System.Windows.Forms.DialogResult.OK)
@@ -67,11 +68,11 @@ namespace WinMergeExtension
 						+ inputArgs.Remove(0, inputArgs.IndexOf(curBranch) + curBranch.Length) 
 						+ Space;
 				else
-					return;
+                    return;
 
-				StartWinMerge();
-			}
-		}
+                StartWinMerge();
+            }
+        }
 
         private static void CreateInstaller()
         {
@@ -113,7 +114,7 @@ namespace WinMergeExtension
 
         private static void StartWinMerge()
 		{
-			processInfo = new ProcessStartInfo(FilePath, inputArgs + additionalArgs);
+			processInfo = new ProcessStartInfo(FilePath, inputArgs);
 			processInfo.CreateNoWindow = true;
 			processInfo.UseShellExecute = false;
 			processInfo.RedirectStandardError = true;
@@ -138,28 +139,46 @@ namespace WinMergeExtension
 
 		private static void GetBranches()
 		{
-			if (Directory.GetDirectories(branchesPath) != null)
-				foreach (string path in Directory.GetDirectories(branchesPath))
-				{
-					if (inputArgs.Contains(path))
-						curBranch = path.Split(SplitterPath).Last();
-					else
-						branchNames.Add(path.Split(SplitterPath).Last());
-				}			
-		}
+            try
+            {
+                if (Directory.GetDirectories(branchesPath) != null)
+                    foreach (string path in Directory.GetDirectories(branchesPath))
+                    {
+                        if (inputArgs.Contains(path))
+                            curBranch = path.Split(SplitterPath).Last();
+                        else
+                            branchNames.Add(path.Split(SplitterPath).Last());
+                    }
+            }
+            catch (Exception ex)
+            {
+                if (isDebugMode)
+                    MessageBox.Show(ex.Message, "Error");
+                return;
+            }
+        }
 
-		private static void GetSettings()
+        private static void GetSettings()
 		{
-			settings = new StreamReader(SettingsFile);
+            try
+            {
+                settings = new StreamReader(SettingsFile);
 
-			do
-			{
-				string line = settings.ReadLine();
+                do
+                {
+                    string line = settings.ReadLine();
 
-				if (line.StartsWith(BranchParName))
-					branchesPath = line.Split(SplitterSettings)[1];
-			} while (!settings.EndOfStream);
-		}
+                    if (line.StartsWith(BranchParName))
+                        branchesPath = line.Split(SplitterSettings)[1];
+                } while (!settings.EndOfStream);
+            }
+            catch(Exception ex)
+            {
+                    if (isDebugMode)
+                        MessageBox.Show(ex.Message, "Error");
+                return;
+            }
+        }
 
 		private static void CheckMode(string[] args)
 		{

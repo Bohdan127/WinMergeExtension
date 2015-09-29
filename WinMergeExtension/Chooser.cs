@@ -19,7 +19,6 @@ namespace WinMergeExtension
 		public Chooser(List<string> branches)
 		{
 			InitializeComponent();
-
 			listBox1.Items.AddRange(branches.ToArray());						
 		}
 
