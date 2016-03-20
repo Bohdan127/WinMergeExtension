@@ -8,9 +8,9 @@
         Title="CustomMessageBox" Height="174.932" Width="260.763" ResizeMode="NoResize">
     <Grid>
         <Label x:Name="lblText" Content="Label" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="77" Width="235"/>
-        <Button x:Name="bYes" Content="Button" HorizontalAlignment="Left" Margin="10,107,0,0" VerticalAlignment="Top" Width="75" IsCancel="True"/>
-        <Button x:Name="bNo" Content="Button" HorizontalAlignment="Left" Margin="90,107,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="bCancel" Content="Button" HorizontalAlignment="Left" Margin="170,107,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="bYes" Content="Button" HorizontalAlignment="Left" Margin="10,107,0,0" Click="bYes_Click" VerticalAlignment="Top" Width="75" IsCancel="True"/>
+        <Button x:Name="bNo" Content="Button" HorizontalAlignment="Left" Margin="90,107,0,0" Click="bNo_Click" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="bCancel" Content="Button" HorizontalAlignment="Left" Margin="170,107,0,0" Click="bCancel_Click" VerticalAlignment="Top" Width="75"/>
 
     </Grid>
 </Window>

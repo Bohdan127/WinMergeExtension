@@ -4,6 +4,7 @@
     {
         Yes,
         No,
-        Cancel
+        Cancel,
+        Default
     }
 }

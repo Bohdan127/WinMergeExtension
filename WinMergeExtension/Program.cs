@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using WpfChooser;
+using WpfChooser.Enums;
+using WpfChooser.Interfaces;
 
 namespace WinMergeExtension
 {
@@ -47,6 +49,7 @@ namespace WinMergeExtension
         static ProcessStartInfo processInfo;
         static Process process;
         static StreamReader settings;
+        static IMessageBox messageBox;
 
         [System.STAThreadAttribute()]
         public static void Main(string[] args)
@@ -71,7 +74,7 @@ namespace WinMergeExtension
                 if (branchesPath == null || string.Empty.Equals(branchesPath))
                 {
                     if (isDebugMode)
-                        MessageBox.Show("BranchesPath is null or empty", "Error");
+                        MessageBox_Show("BranchesPath is null or empty", "Error");
                     return;
                 }
 
@@ -95,6 +98,14 @@ namespace WinMergeExtension
             }
         }
 
+        //todo really big and bad crutch, NEED TO FIX IT!!!!
+        private static Result MessageBox_Show(string text, string title = null, Mode mode = Mode.Ok)
+        {
+            //not initialize by some DI and should be initialize here
+            messageBox = new CustomMessageBox();
+            return messageBox.Show(text, title, mode);
+        }
+
         private static void CheckForUpdates()
         {
             try
@@ -104,23 +115,23 @@ namespace WinMergeExtension
 
                 if (isDebugMode)
                 {
-                    MessageBox.Show(string.Format("{0} - Exists {1}", updatePath, exist));
-                    MessageBox.Show(string.Format("Need Some Update - {0}", shouldUpdate));
-                    MessageBox.Show(string.Format("Automatically Update - {0}", automaticallyUpdate));
+                    MessageBox_Show(string.Format("{0} - Exists {1}", updatePath, exist));
+                    MessageBox_Show(string.Format("Need Some Update - {0}", shouldUpdate));
+                    MessageBox_Show(string.Format("Automatically Update - {0}", automaticallyUpdate));
 
                 }
 
                 if (exist && shouldUpdate)
                 {
                     if (!automaticallyUpdate)
-                        shouldUpdate = MessageBox.Show("New Update Available, should update now?"
-                        , "New Version", MessageBoxButtons.OKCancel) == DialogResult.OK;
+                        shouldUpdate = MessageBox_Show("New Update Available, should update now?"
+                        , "New Version", Mode.OkCancel) == Result.Yes;
                     if (shouldUpdate)
                     {
                         if (isDebugMode)
                         {
-                            MessageBox.Show(string.Format("Call Process.Start({0});", updatePath + updateFile));
-                            MessageBox.Show("Exit for Update");
+                            MessageBox_Show(string.Format("Call Process.Start({0});", updatePath + updateFile));
+                            MessageBox_Show("Exit for Update");
                         }
                         Process.Start(updatePath + updateFile);
                         Environment.Exit(0);
@@ -130,7 +141,7 @@ namespace WinMergeExtension
             catch (Exception ex)
             {
                 if (isDebugMode)
-                    MessageBox.Show(ex.Message, "Error");
+                    MessageBox_Show(ex.Message, "Error");
                 return;
             }
         }
@@ -254,9 +265,9 @@ namespace WinMergeExtension
                 string error = process.StandardError.ReadToEnd();
                 int exitCode = process.ExitCode;
 
-                MessageBox.Show("output>>" + (String.IsNullOrEmpty(output) ? "(none)" : output));
-                MessageBox.Show("error>>" + (String.IsNullOrEmpty(error) ? "(none)" : error));
-                MessageBox.Show("ExitCode: " + exitCode.ToString(), "ExecuteCommand");
+                MessageBox_Show("output>>" + (String.IsNullOrEmpty(output) ? "(none)" : output));
+                MessageBox_Show("error>>" + (String.IsNullOrEmpty(error) ? "(none)" : error));
+                MessageBox_Show("ExitCode: " + exitCode.ToString(), "ExecuteCommand");
             }
 
             process.Close();
@@ -278,7 +289,7 @@ namespace WinMergeExtension
             catch (Exception ex)
             {
                 if (isDebugMode)
-                    MessageBox.Show(ex.Message, "Error");
+                    MessageBox_Show(ex.Message, "Error");
                 return;
             }
         }
@@ -308,7 +319,7 @@ namespace WinMergeExtension
             catch (Exception ex)
             {
                 if (isDebugMode)
-                    MessageBox.Show(ex.Message, "Error");
+                    MessageBox_Show(ex.Message, "Error");
                 return;
             }
         }
@@ -323,7 +334,9 @@ namespace WinMergeExtension
             }
 
             if (isDebugMode)
-                MessageBox.Show(inputArgs);
+            {
+                MessageBox_Show(inputArgs);
+            }
         }
     }
 }
