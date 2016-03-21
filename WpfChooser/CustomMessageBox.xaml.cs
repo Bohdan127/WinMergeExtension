@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using WpfChooser.Enums;
 using WpfChooser.Interfaces;
 
@@ -47,7 +48,7 @@ namespace WpfChooser
 
         public Result Show(string text, string title, Mode mode)
         {//todo do it smart!!!(going about checing mode and other
-            lblText.Content = text;
+            textBlock.Text = text;
             if (title == null)
                 title = string.Empty;
             Title = title;
@@ -65,21 +66,25 @@ namespace WpfChooser
                     bNo.Visibility = Visibility.Visible;
                     bCancel.Visibility = Visibility.Hidden;
                     break;
+
                 case Mode.YesNoCancel:
                     bYes.Content = yesCaption;
                     bNo.Visibility = Visibility.Visible;
                     bCancel.Visibility = Visibility.Visible;
                     break;
+
                 case Mode.OkCancel:
                     bYes.Content = okCaption;
                     bNo.Visibility = Visibility.Hidden;
                     bCancel.Visibility = Visibility.Visible;
                     break;
+
                 case Mode.Ok:
                     bYes.Content = okCaption;
                     bNo.Visibility = Visibility.Hidden;
                     bCancel.Visibility = Visibility.Hidden;
                     break;
+
                 default:
                     break;
             }
@@ -88,19 +93,33 @@ namespace WpfChooser
         private void bYes_Click(object sender, RoutedEventArgs e)
         {
             result = Result.Yes;
-            this.Close();
+            Close();
         }
 
         private void bNo_Click(object sender, RoutedEventArgs e)
         {
             result = Result.No;
-            this.Close();
+            Close();
         }
 
         private void bCancel_Click(object sender, RoutedEventArgs e)
         {
             result = Result.Cancel;
-            this.Close();
+            Close();
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                result = Result.Yes;
+                Close();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                result = Result.Cancel;
+                Close();
+            }
         }
     }
 }

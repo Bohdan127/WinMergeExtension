@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfChooser"
         mc:Ignorable="d"
-        Title="CustomMessageBox" Height="174.932" Width="260.763" ResizeMode="NoResize">
+        Title="CustomMessageBox" Height="174.932" Width="264.1" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Icon="App.ico" KeyDown="Window_KeyDown">
     <Grid>
-        <Label x:Name="lblText" Content="Label" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="77" Width="235"/>
-        <Button x:Name="bYes" Content="Button" HorizontalAlignment="Left" Margin="10,107,0,0" Click="bYes_Click" VerticalAlignment="Top" Width="75" IsCancel="True"/>
-        <Button x:Name="bNo" Content="Button" HorizontalAlignment="Left" Margin="90,107,0,0" Click="bNo_Click" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="bCancel" Content="Button" HorizontalAlignment="Left" Margin="170,107,0,0" Click="bCancel_Click" VerticalAlignment="Top" Width="75"/>
-
+        <Button x:Name="bYes" Content="Button" HorizontalAlignment="Left" Margin="10,107,0,10" Click="bYes_Click" VerticalAlignment="Bottom" Width="75" IsCancel="True" />
+        <Button x:Name="bNo" Content="Button" HorizontalAlignment="Left" Margin="90,107,0,10" Click="bNo_Click" VerticalAlignment="Bottom" Width="75" />
+        <Button x:Name="bCancel" Content="Button" HorizontalAlignment="Left" Margin="170,107,0,10" Click="bCancel_Click" VerticalAlignment="Bottom" Width="75" />
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,0,10,40" TextWrapping="Wrap"  TextAlignment="Left"
+                   Text="TextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlockTextBlock"
+                   VerticalAlignment="Bottom" Height="94" Width="Auto" />
     </Grid>
 </Window>

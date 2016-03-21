@@ -12,44 +12,44 @@ using WpfChooser.Interfaces;
 
 namespace WinMergeExtension
 {
-    class Program
+    internal class Program
     {
-        const string DebugIdentifier = "true";
-        const string CreateIdentifier = "create";
-        const string FilePath = @"C:\WinMergeExtension\StartWinMerge.bat";
-        const string SettingsFile = @"C:\WinMergeExtension\Settings.txt";
-        const string BranchParName = "BrPath";
-        const char SplitterSettings = '=';
-        const char SplitterVersions = '.';
-        const char SplitterBytes = ',';
-        const char SplitterPath = '\\';
-        const string BytesVariable = "string WinMergeBytes";
-        const string BytesVariableWpf = "string WpfBytes";
-        const string FileExtName = "WinMergeExtension.exe";
-        const string FileWpfExtName = "WpfChooser.exe";
-        const string DialogTitle = "Choose WinMergeExtentionInstaller 'Program.cs' file";
-        const string Space = " ";
-        const string DefaultUpdatePathName = "UpdateUrl";
-        const string DefaultUpdateFileName = "UpdateFile";
-        const string DefaultUpdatesCheckName = "CheckUpdates";
-        const string DefaultAutoUpdateName = "AutoUpdate";
+        private const string DebugIdentifier = "true";
+        private const string CreateIdentifier = "create";
+        private const string FilePath = @"C:\WinMergeExtension\StartWinMerge.bat";
+        private const string SettingsFile = @"C:\WinMergeExtension\Settings.txt";
+        private const string BranchParName = "BrPath";
+        private const char SplitterSettings = '=';
+        private const char SplitterVersions = '.';
+        private const char SplitterBytes = ',';
+        private const char SplitterPath = '\\';
+        private const string BytesVariable = "string WinMergeBytes";
+        private const string BytesVariableWpf = "string WpfBytes";
+        private const string FileExtName = "WinMergeExtension.exe";
+        private const string FileWpfExtName = "WpfChooser.exe";
+        private const string DialogTitle = "Choose WinMergeExtentionInstaller 'Program.cs' file";
+        private const string Space = " ";
+        private const string DefaultUpdatePathName = "UpdateUrl";
+        private const string DefaultUpdateFileName = "UpdateFile";
+        private const string DefaultUpdatesCheckName = "CheckUpdates";
+        private const string DefaultAutoUpdateName = "AutoUpdate";
 
-        static bool isDebugMode = false;
-        static bool checkForUpdates = false;
-        static bool automaticallyUpdate = false;
-        static string branchesPath = string.Empty;
-        static string updatePath = string.Empty;
-        static string updateFile = string.Empty;
-        static string inputArgs = string.Empty;
-        static string secondFile = string.Empty;
-        static string curBranch = string.Empty;
-        static string bytesLineTemplate = "string WinMergeBytes = \"{0}\";";
-        static string bytesLineTemplateWpf = "string WpfBytes = \"{0}\";";
-        static List<string> branchNames = new List<string>();
-        static ProcessStartInfo processInfo;
-        static Process process;
-        static StreamReader settings;
-        static IMessageBox messageBox;
+        private static bool isDebugMode = false;
+        private static bool checkForUpdates = false;
+        private static bool automaticallyUpdate = false;
+        private static string branchesPath = string.Empty;
+        private static string updatePath = string.Empty;
+        private static string updateFile = string.Empty;
+        private static string inputArgs = string.Empty;
+        private static string secondFile = string.Empty;
+        private static string curBranch = string.Empty;
+        private static string bytesLineTemplate = "string WinMergeBytes = \"{0}\";";
+        private static string bytesLineTemplateWpf = "string WpfBytes = \"{0}\";";
+        private static List<string> branchNames = new List<string>();
+        private static ProcessStartInfo processInfo;
+        private static Process process;
+        private static StreamReader settings;
+        private static IMessageBox messageBox;
 
         [System.STAThreadAttribute()]
         public static void Main(string[] args)
@@ -90,7 +90,6 @@ namespace WinMergeExtension
                         + chooseBranch.SelectedElement
                         + inputArgs.Remove(0, inputArgs.IndexOf(curBranch) + curBranch.Length)
                         + Space;
-
                 else
                     return;
 
@@ -118,7 +117,6 @@ namespace WinMergeExtension
                     MessageBox_Show(string.Format("{0} - Exists {1}", updatePath, exist));
                     MessageBox_Show(string.Format("Need Some Update - {0}", shouldUpdate));
                     MessageBox_Show(string.Format("Automatically Update - {0}", automaticallyUpdate));
-
                 }
 
                 if (exist && shouldUpdate)
@@ -174,8 +172,6 @@ namespace WinMergeExtension
 
         private static void CreateInstaller()
         {
-
-
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
                 dialog.Title = DialogTitle;
